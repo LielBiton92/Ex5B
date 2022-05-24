@@ -2,27 +2,53 @@
 #include "OrgChart.hpp"
 using namespace ariel;
 
+Node::Node(const Node *other){
+    this->name=other->name;
+    for(Node *c : other->Childrens){
+        Node t = new Node(c);
+        this->AddChild(&t);
+    }
+}
+
 OrgChart::OrgChart()
 {
     this->root = nullptr;
 }
-OrgChart::~OrgChart(){delete root;}
+OrgChart::~OrgChart(){
+    for(Node *p : this->Emp){
+        delete p;
+    }
+}
+
+OrgChart::OrgChart(const OrgChart &other){
+    this->root = nullptr;
+    *this = other;
+}
+
+OrgChart& OrgChart::operator=(const OrgChart &other){
+    if(this != &other){
+        this->root = new Node(other.root);
+        for(Node *p : other.Emp){
+            this->Emp.push_back(p);
+        }
+    }
+    return *this;
+}
+
 
 Node::Node(const std::string &name)
 {
     this->name = name;
-    this->Childrens.resize(0);
-    this->Father = nullptr;
 }
 
-Node::~Node()
-{
+// Node::~Node()
+// {
 
-    for (Node *node : this->Childrens)
-    {
-        delete node;
-    }
-}
+//     for (Node *node : this->Childrens)
+//     {
+//         delete node;
+//     }
+// }
 
 const std::string &Node::getname() const
 {
@@ -34,14 +60,10 @@ std::vector<Node *> Node::getChilds()
     return this->Childrens;
 }
 
-void Node::setFather(Node *F)
-{
-    this->Father = F;
-}
+
 
 void Node::AddChild(Node *Child)
 {
-    Child->setFather(this);
     this->Childrens.push_back(Child);
 }
 void Node::set_name(const std::string &name) { this->name = name; }
@@ -61,16 +83,15 @@ void OrgChart::Iterator::fill_level_order()
         Node *temp = queue.front();
         Res.push_back(temp);
         queue.pop();
-        for (unsigned int i = 0; i < temp->getChilds().size(); i++)
+        for (Node *p : temp->getChilds())
         {
-            queue.push(temp->getChilds().at(i));
+            queue.push(p);
         }
     }
 }
 
 void OrgChart::Iterator::fill_reverse_order()
 {
-    Res.clear();
     std::vector<Node *> temp_vec;
     if (runner == nullptr)
     {
@@ -148,6 +169,7 @@ OrgChart::Iterator OrgChart::Iterator::operator++(int)
 bool OrgChart::Iterator::operator!=(const Iterator &it1) { return !(runner == it1.runner); }
 bool OrgChart::Iterator::operator==(const Iterator &it) { return runner == it.runner; }
 
+
 OrgChart &OrgChart::add_root(const std::string &name)
 {
     if (name.empty())
@@ -177,7 +199,6 @@ OrgChart &OrgChart::add_sub(const std::string &father, const std::string &child)
         {
             Node *c = new Node(child);
             p->AddChild(c);
-            c->setFather(p);
             // c->setlevel(p->getlevel() + 1);
             this->Emp.push_back(c);
             return *this;
@@ -264,7 +285,7 @@ namespace ariel
         std::string res = " ";
         for (unsigned int i = 0; i < og.Emp.size(); i++)
         {
-            res += res + og.Emp[i]->getname() + " ";
+            res += og.Emp[i]->getname() + " ";
         }
         os << res;
         return os;

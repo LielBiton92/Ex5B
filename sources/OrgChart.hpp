@@ -11,19 +11,17 @@ namespace ariel
 
     class Node
     {
-    private:
-        Node *Father;
-        std::vector<Node *> Childrens;
+        private:
+            std::vector<Node *> Childrens;
 
-    public:
-        std::string name;
-        Node(const std::string &name);
-        ~Node();
-        const std::string &getname() const;
-        void set_name(const std::string &name);
-        std::vector<Node *> getChilds();
-        void setFather(Node *Father);
-        void AddChild(Node *Child);
+        public:
+            std::string name;
+            Node(const std::string &name);
+            Node(const Node *other);
+            const std::string &getname() const;
+            void set_name(const std::string &name);
+            std::vector<Node *> getChilds();
+            void AddChild(Node *Child);
     };
 
     class OrgChart
@@ -39,18 +37,12 @@ namespace ariel
 
     public:
 
-        std::vector<Node *> Emp;
-
-        OrgChart &add_root(const std::string &name);
-        OrgChart &add_sub(const std::string &father, const std::string &child);
-
         class Iterator
         {
-        private:
-             Node *runner;
-            std::vector<Node*> Res;
-            
-             unsigned int index = 0;  
+            private:
+                Node *runner;
+                std::vector<Node*> Res;
+                unsigned int index = 0;  
 
         public:
             void fill_level_order();
@@ -65,10 +57,12 @@ namespace ariel
             bool operator==(const Iterator &it); 
 
         };
-
+        std::vector<Node *> Emp;
+        OrgChart &add_root(const std::string &name);
+        OrgChart &add_sub(const std::string &father, const std::string &child);
         OrgChart();
+        OrgChart(const OrgChart &other);
         ~OrgChart();
-        
         Iterator begin_level_order() const;
         Iterator end_level_order() const;
         Iterator begin_reverse_order()const;
@@ -78,6 +72,7 @@ namespace ariel
         Iterator begin()const;
         Iterator end()const;
 
+        OrgChart &operator=(const OrgChart &other);
         friend std::ostream &operator<<(std::ostream &os, OrgChart &og);
     };
 
