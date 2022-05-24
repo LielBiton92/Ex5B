@@ -13,13 +13,17 @@ int main(int argc, char const *argv[])
         .add_sub("COO", "VP_BI"); // Now the VP_BI is subordinate to the COO
 
 
-    OrgChart ss;
-    ss=organization;
-    cout << ss;
-    // for(auto it = GG.begin_level_order();it!=GG.end_level_order();++it){
-    //     cout << *it;
+    OrgChart mo(organization);
+
+
+
+    // for(auto it = organization.begin_level_order();it!=organization.end_level_order();++it){
+    //     cout << *it+ " ";
     // }
+
+
 }
+
 
 
 
