@@ -12,8 +12,19 @@ int main(int argc, char const *argv[])
         .add_sub("CTO", "VP_SW")  // Now the VP Software is subordinate to the CTO
         .add_sub("COO", "VP_BI"); // Now the VP_BI is subordinate to the COO
 
+        OrgChart org = std::move(organization);
 
-    OrgChart mo(organization);
+
+
+        cout <<org;
+        // cout<<organization;
+
+
+
+
+
+        
+    
 
 
 

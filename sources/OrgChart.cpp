@@ -34,8 +34,12 @@ OrgChart::~OrgChart()
 }
 
 OrgChart& OrgChart::operator=(OrgChart &&other)noexcept{
-    this->root = other.root;
+    if(this != &other){
+        this->root = other.root;
+        other.root = nullptr;
+    }
     return *this;
+
 }
 
 OrgChart::OrgChart(OrgChart &&other) noexcept{
@@ -44,24 +48,28 @@ OrgChart::OrgChart(OrgChart &&other) noexcept{
     
 }
 
-OrgChart::OrgChart(const OrgChart &other)
-{
-    this->root = nullptr;
-    *this = other;
-}
 
 OrgChart &OrgChart::operator=(const OrgChart &other)
 {
-    if (this != &other)
-    {
-        this->root = new Node(other.root);
-        for (Node *p : other.Emp)
-        {
-            this->Emp.push_back(p);
-        }
+  if (this != &other) {
+      this->~OrgChart();
     }
-    return *this;
-}
+        add_root(other.root->getname());
+    Node * temp  = nullptr; 
+    for (unsigned int j = 0 ; j < other.Emp.size() ; j++) {
+       temp = other.Emp.at(j);
+       for (unsigned int i = 0; i < temp->getChilds().size(); i++) {
+           add_sub(temp->getname(), temp->getChilds().at(i)->getname());
+       }
+    }
+        return *this;
+
+    }
+
+
+
+
+
 
 Node::Node(const std::string &name)
 {
