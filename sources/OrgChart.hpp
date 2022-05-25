@@ -60,8 +60,8 @@ namespace ariel
             const std::string &operator*() const{ return runner->getname(); }
             Iterator &operator++();
             Iterator operator++(int);
-            bool operator!=(const Iterator &it1); 
-            bool operator==(const Iterator &it); 
+            bool operator!=(const Iterator &it1)const; 
+            bool operator==(const Iterator &it)const ; 
 
         };
         OrgChart &add_root(const std::string &name);

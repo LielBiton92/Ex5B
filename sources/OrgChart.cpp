@@ -25,6 +25,20 @@ OrgChart::OrgChart()
 {
     this->root = nullptr;
 }
+
+OrgChart::OrgChart(const OrgChart &other){
+    
+    this->root = new Node(other.root->getname()); 
+    Emp.push_back(this->root);
+    for(Node *NewN : other.Emp){
+        for(Node *t : NewN->getChilds()){
+           this->add_sub(NewN->getname(),t->getname());
+        }
+    }
+
+}
+
+
 OrgChart::~OrgChart()
 {
     for (Node *p : this->Emp)
@@ -49,18 +63,18 @@ OrgChart::OrgChart(OrgChart &&other) noexcept{
 }
 
 
+
 OrgChart &OrgChart::operator=(const OrgChart &other)
 {
   if (this != &other) {
       this->~OrgChart();
     }
-        add_root(other.root->getname());
-    Node * temp  = nullptr; 
-    for (unsigned int j = 0 ; j < other.Emp.size() ; j++) {
-       temp = other.Emp.at(j);
-       for (unsigned int i = 0; i < temp->getChilds().size(); i++) {
-           add_sub(temp->getname(), temp->getChilds().at(i)->getname());
-       }
+    this->root = new Node(other.root->getname()); 
+    Emp.push_back(this->root);
+    for(Node *NewN : other.Emp){
+        for(Node *t : NewN->getChilds()){
+           this->add_sub(NewN->getname(),t->getname());
+        }
     }
         return *this;
 
@@ -187,8 +201,8 @@ OrgChart::Iterator OrgChart::Iterator::operator++(int)
     return temp;
 }
 
-bool OrgChart::Iterator::operator!=(const Iterator &it1) { return !(runner == it1.runner); }
-bool OrgChart::Iterator::operator==(const Iterator &it) { return runner == it.runner; }
+bool OrgChart::Iterator::operator!=(const Iterator &it1) const { return !(runner == it1.runner); }
+bool OrgChart::Iterator::operator==(const Iterator &it) const  { return runner == it.runner; }
 
 OrgChart &OrgChart::add_root(const std::string &name)
 {
@@ -304,12 +318,9 @@ namespace ariel
 {
     std::ostream &operator<<(std::ostream &os, OrgChart &og)
     {
-        std::string res = " ";
-        for (unsigned int i = 0; i < og.Emp.size(); i++)
-        {
-            res += og.Emp[i]->getname() + " ";
+        for(auto it = og.begin_level_order();it!=og.end_level_order();++it){
+            os << *it + " ";
         }
-        os << res;
         return os;
     }
 }
